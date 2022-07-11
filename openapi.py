@@ -13,9 +13,9 @@ db = client.test
 
 API_Key = os.environ.get("ApiKey")
 InputDate = int(input("Date : "  ))
-EndDate = InputDate + 10
+
 page = 1
-URL = "http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic?bgnde={Date}&endde={endDate}&pageNo={Page}&numOfRows=1000&serviceKey={API}".format(Page=page,Date=InputDate, endDate = EndDate, API=API_Key)
+URL = "http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic?bgnde={Date}&pageNo={Page}&numOfRows=1000&serviceKey={API}".format(Page=page,Date=InputDate, API=API_Key)
 
 rq = requests.get(URL)
 soup = BeautifulSoup(rq.text, "html.parser")
