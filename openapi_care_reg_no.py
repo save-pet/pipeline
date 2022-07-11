@@ -1,4 +1,3 @@
-from regex import R
 import requests
 from bs4 import BeautifulSoup
 from pymongo import MongoClient
@@ -26,8 +25,7 @@ for x in totalCd:
     soup = BeautifulSoup(rq.text, "html.parser")
     
     for item in soup.find_all("item"):
-        print(item)
-        careRegNo = item.find("caregegno").text
+        careRegNo = item.find("careregno").text
         careNm = item.find("carenm").text
 
         db.careRegNo.insert_one({"careRegNo":careRegNo, "careNm":careNm })
