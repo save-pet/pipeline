@@ -1,4 +1,5 @@
 import os
+import time
 import math
 import requests
 from datetime import datetime, timedelta
@@ -21,13 +22,13 @@ def get_requests_params(key, days_ago):
     date = (datetime.today()- timedelta(days_ago)).strftime("%Y%m%d")
     return API_Key, date
 
-def get_total_pages(API_Key, date):
+def get_total_count_pages(API_Key, date):
     URL = get_url(API_Key, date)
     rq = requests.get(URL)
     data = rq.json()
     animal_info_totalCount = data['response']['body']['totalCount']
     animal_info_totalPages = math.ceil(animal_info_totalCount/1000)
-    return animal_info_totalPages
+    return animal_info_totalCount, animal_info_totalPages
 
 def get_info_list_by_page(API_Key, date, page_number):
     URL = get_url(API_Key, date, page_number)
@@ -53,14 +54,23 @@ def main():
     load_dotenv()
 
     db_regnotest = get_db("regnotest")
+    db_dcument_count = db_regnotest.rescues.count_documents({})
+    print(db_dcument_count)
+    
+    API_Key, date = get_requests_params("ApiKey", 11)
+    animal_info_totalCount, animal_info_totalPages = get_total_count_pages(API_Key, date)
+
+    # 보호중 데이터가 종료되는 경우 고려해봐야함
+    if db_dcument_count == animal_info_totalCount:
+        print("업데이트할 항목이 없습니다!")
+        print(f"db_dcument_count: {db_dcument_count} | animal_info_totalCount : {animal_info_totalCount}")
+        return
+    
+    db_regnotest.rescues.drop() 
+    print("초기화 완료!")
     db_openApi = get_db("openApi")
-
-    API_Key, date = get_requests_params("ApiKey", 3)
-
-    animal_info_totalPages = get_total_pages(API_Key, date)
-
     shelter_info_dict = get_shelter_info(db_openApi)
-
+    print("파이프라인 가동!")
     result = [ 
         {
             "desertionNo": info_dict['desertionNo'],
@@ -87,7 +97,11 @@ def main():
     for info_dict in get_info_list_by_page(API_Key, date, page_number)
         ]
     db_regnotest.rescues.insert_many(result)
+    print(f"{len(result)}건 파이프라인 로드 완료!")
 
+start = time.time()
+main()
+print("time :", time.time() - start) 
 
 # pprint(result)
 
