@@ -1,37 +1,42 @@
 import os
 import math
 import requests
-from bs4 import BeautifulSoup
+from datetime import datetime, timedelta
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from pprint import pprint
 
 def get_db(database_name):
-    load_dotenv()
     mongodb_URL = os.environ.get('mongodbURL')
     client = MongoClient(mongodb_URL)
     db = getattr(client, database_name)
     return db
 
-def get_url():
-    API_Key = os.environ.get("ApiKey")
-    # InputDate = int(input("Date(YYYYMMDD) : "  ))
-    InputDate = 20220712
-    EndDate = InputDate + 10
-
-    URL = f"http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic?bgnde={InputDate}&numOfRows=1000&serviceKey={API_Key}&_type=json"
+def get_url(API_Key, ten_days_ago, page_number = 1):
+    URL = f"http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic?bgnde={ten_days_ago}&numOfRows=1000&pageNo={page_number}&serviceKey={API_Key}&_type=json"
     return URL
+
+def get_requests_params():
+    API_Key = os.environ.get("ApiKey")
+    ten_days_ago = (datetime.today()- timedelta(10)).strftime("%Y%m%d")
+    return API_Key, ten_days_ago
+
+load_dotenv()
 
 db_regnotest = get_db("regnotest")
 db_openApi = get_db("openApi")
-URL = get_url()
 
+API_Key, ten_days_ago = get_requests_params()
+
+
+URL = get_url(API_Key, ten_days_ago)
 rq = requests.get(URL)
 data = rq.json()
 
 animal_info_list = data['response']['body']['items']['item']
 animal_info_totalCount = data['response']['body']['totalCount']
 animal_info_totalPages = math.ceil(animal_info_totalCount/1000)
+
 
 
 
