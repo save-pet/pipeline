@@ -18,7 +18,7 @@ def get_url():
     # InputDate = 20220712
     EndDate = InputDate + 10
 
-    URL = "http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic?bgnde={Date}&numOfRows=1000&serviceKey={API}".format(Date=InputDate, API=API_Key)
+    URL = f"http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic?bgnde={InputDate}&numOfRows=1000&serviceKey={API_Key}"
     return URL
 
 client, db = set_db_configure("regnotest")
