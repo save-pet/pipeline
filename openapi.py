@@ -1,20 +1,28 @@
+import os
 import requests
 from bs4 import BeautifulSoup
 from pymongo import MongoClient
 from dotenv import load_dotenv
-import os
+from pprint import pprint
 
-load_dotenv()
+def set_db_configure(database_name):
+    load_dotenv()
+    mongodb_URL = os.environ.get('mongodbURL')
+    client = MongoClient(mongodb_URL)
+    db = getattr(client, database_name)
+    return client, db
 
-mongodb_URL = os.environ.get('mongodbURL')
-client = MongoClient(mongodb_URL)
-db = client.regnotest
+def get_url():
+    API_Key = os.environ.get("ApiKey")
+    InputDate = int(input("Date(YYYYMMDD) : "  ))
+    # InputDate = 20220712
+    EndDate = InputDate + 10
 
-API_Key = os.environ.get("ApiKey")
-InputDate = int(input("Date(YYYYMMDD) : "  ))
+    URL = "http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic?bgnde={Date}&numOfRows=1000&serviceKey={API}".format(Date=InputDate, API=API_Key)
+    return URL
 
-page = 1
-URL = "http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic?bgnde={Date}&pageNo={Page}&numOfRows=1000&serviceKey={API}".format(Page=page,Date=InputDate, API=API_Key)
+client, db = set_db_configure("regnotest")
+URL = get_url()
 
 rq = requests.get(URL)
 soup = BeautifulSoup(rq.text, "html.parser")
@@ -48,6 +56,7 @@ for item in soup.find_all("item"):
         careCode = careregno[0]['careRegNo']
     except:
         careCode = 0
+        print(item)
         print(careName, careregno)
 
     db.rescues.insert_one({"desertionNo": desertionNo,"imgUrl": imgUrl, "happenDate": happenDate, "happenPlace": happenPlace, "kindCode": kindCd, "colorCode": colorCd, "sexCode": sexCode, "neuteY/N": neuteYn, "noticeStartDate":noticeSdt, "noticeEndDate": noticeEdt, "specialMark": specialMark, "age": age, "weight": weight, "processState": processState, "careCode": careCode, "careAddr": careAddr, "careName": careName, "careTel": careTel,  "officeTel": officeTel })
