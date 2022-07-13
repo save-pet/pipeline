@@ -6,8 +6,6 @@ from dotenv import load_dotenv
 from pprint import pprint
 
 load_dotenv()
-
-
     
 def address2coord(address, careregno):
     preprocess_address = address.split("(")[0]
@@ -52,8 +50,6 @@ def address2coord(address, careregno):
         # print(address)
         print("AnyException : ", erra)
         print()
-
-
     
     return lng, lat
 
@@ -116,5 +112,3 @@ for x in shelters:
         db1.shelters.insert_one({"careCode": careregno, "careAddr": careAddr, "careName": careName, "careTel": careTel, "lng": lng, "lat": lat})
 
 print(CAN_NOT_ADDRESS)
-
-
