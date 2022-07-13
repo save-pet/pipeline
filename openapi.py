@@ -31,6 +31,7 @@ data = rq.json()
 
 animal_info_list = data['response']['body']['items']['item']
 animal_info_totalCount = data['response']['body']['totalCount']
+animal_info_totalPages = math.ceil(animal_info_totalCount/1000)
 
 
 
