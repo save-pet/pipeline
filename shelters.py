@@ -101,6 +101,8 @@ for x in shelters:
             careAddr = "경상남도 창녕군 고암면 억만리 28"
         if careregno == "348528201000001":
             careAddr = "경남 창원시 마산합포구 진북면 지산2길 139-112"
+        if careregno == "311322200900001":
+            careAddr = "경기도 양주시 남면 감악산로 63-37"
        
         #      or careregno == "344462200900001" :
         #     print('items')
@@ -113,8 +115,6 @@ for x in shelters:
             CAN_NOT_ADDRESS.append({"careregno":careregno,"careName":careName, "careAddr":careAddr})
             print(careregno, careAddr)
 
-        db1.shelters.insert_one({"careCode": careregno, "careAddr": careAddr, "careName": careName, "careTel": careTel, "lng": lng, "lat": lat})
+        db1.shelters.insert_one({"careCode": careregno, "careAddr": careAddr, "careName": careName, "careTel": careTel, "longitude": lng, "latitude": lat})
 
 print(CAN_NOT_ADDRESS)
-
-
