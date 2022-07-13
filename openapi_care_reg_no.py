@@ -28,4 +28,4 @@ for x in totalCd:
         careRegNo = item.find("careregno").text
         careNm = item.find("carenm").text
 
-        db.careRegNum.insert_one({"careRegNo":careRegNo, "careNm":careNm })
+        db.careRegNo.insert_one({"careRegNo":careRegNo, "careNm":careNm })
