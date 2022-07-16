@@ -107,7 +107,7 @@ def get_coord(place, shelter_address):
     data = place2coord(place)
     if data == 0:
         data = place2coord(preprocessing_data(place))
-        if len(data) == 0:
+        if data == 0:
             return address2coord(shelter_address)
     return get_center_coord(data)
 
