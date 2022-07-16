@@ -84,7 +84,7 @@ def place2coord(place):
     data = rq.json()
     if ('documents' not in data) or (len(data['documents'])==0):
         return 0
-    return data
+    return data['documents']
 
 def preprocessing_data(place):
     address = place.split()
@@ -95,7 +95,6 @@ def preprocessing_data(place):
 
 def get_center_coord(data):
     cunsum_dict = {"lat": 0, "lng": 0}
-
     for elem in data:
         cunsum_dict['lat'] += float(elem['y'])
         cunsum_dict['lng'] += float(elem['x'])
@@ -109,7 +108,10 @@ def get_coord(place, shelter_address):
         data = place2coord(preprocessing_data(place))
         if data == 0:
             return address2coord(shelter_address)
-    return get_center_coord(data)
+        else: 
+            return get_center_coord(data)
+    else: 
+        return get_center_coord(data)
 
 def main():
     load_dotenv()
