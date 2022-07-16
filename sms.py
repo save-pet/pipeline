@@ -10,7 +10,7 @@ client = Client(account_sid, auth_token)
 message = client.messages.create(
     body="보이냐!22!",
     from_="+17657905252",
-    to="+821027828277")
+    to="+821022227777")
 
 print(message.sid)
 
