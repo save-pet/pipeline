@@ -62,7 +62,7 @@ def address2coord(address):
     rq = requests.get(URL, headers=headers)
     data = rq.json()
 
-    if ('documents' not in data) or (len(data['documents']==0)):
+    if ('documents' not in data) or (len(data['documents'])==0):
         pprint(data)
         print(address)
         print("address2coord Error")
@@ -82,7 +82,7 @@ def place2coord(place):
 
     rq = requests.get(URL, headers=headers)
     data = rq.json()
-    if ('documents' not in data) or (len(data['documents']==0)):
+    if ('documents' not in data) or (len(data['documents'])==0):
         return 0
     return data
 
