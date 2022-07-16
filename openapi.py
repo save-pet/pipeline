@@ -66,11 +66,11 @@ def address2coord(address):
         pprint(data)
         print(address)
         print("address2coord Error")
-        return
+        return preprocess_address, 0
         
     lng = float(data['documents'][0]['address']['x']) # 경도 127.XX
     lat = float(data['documents'][0]['address']['y']) # 위도 36.xx
-    return {"latitude": lat, "longitude": lng}
+    return preprocess_address, {"latitude": lat, "longitude": lng}
 
 def place2coord(place):
     headers = {
@@ -107,7 +107,22 @@ def get_coord(place, shelter_address):
     if data == 0:
         data = place2coord(preprocessing_data(place))
         if data == 0:
-            return address2coord(shelter_address)
+            preprocess_address, coord = address2coord(shelter_address)
+            if coord == 0:
+                address_target = int(preprocess_address.split()[-1].split("-")[-1])
+                new_preprocess_address = preprocess_address.replace(address_target,str(address_target+1))
+                preprocess_address, coord = address2coord(new_preprocess_address)
+                if coord == 0:
+                    new_preprocess_address = preprocess_address.replace(address_target,str(address_target-1))
+                    preprocess_address, coord = address2coord(new_preprocess_address)
+                    if coord == 0:
+                        return {"latitude": 37.23988837533657, "longitude": 131.8719452704162}
+                    else:
+                        return coord
+                else:
+                    return coord
+            else:
+                return coord
         else: 
             return get_center_coord(data)
     else: 
@@ -115,7 +130,7 @@ def get_coord(place, shelter_address):
 
 def main():
     load_dotenv()
-    db_output = get_db("regnotest")
+    db_output = get_db("test")
     db_document_count = db_output.rescues.count_documents({})
     print(db_document_count)
     
