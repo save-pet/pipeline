@@ -116,8 +116,8 @@ def get_coord(place, shelter_address):
 def main():
     load_dotenv()
 
-    db_regnotest = get_db("regnotest")
-    db_dcument_count = db_regnotest.rescues.count_documents({})
+    db_output = get_db("regnotest")
+    db_dcument_count = db_output.rescues.count_documents({})
     print(db_dcument_count)
     
     API_Key, date = get_requests_params("ApiKey", 11)
@@ -129,8 +129,8 @@ def main():
         print(f"db_dcument_count: {db_dcument_count} | animal_info_totalCount : {animal_info_totalCount}")
         return
     
-    db_openApi = get_db("test")
-    shelter_info_dict = get_shelter_info(db_openApi)
+    db_shelter_info = get_db("test")
+    shelter_info_dict = get_shelter_info(db_shelter_info)
     print(f"{animal_info_totalCount}건 파이프라인 가동!")
     result = [ 
         (
@@ -163,9 +163,9 @@ def main():
     for page_number in range(1, animal_info_totalPages+1) 
     for info_dict in get_info_list_by_page(API_Key, date, page_number)
         ]
-    db_regnotest.rescues.drop() 
+    db_output.rescues.drop() 
     print("초기화 완료!")
-    db_regnotest.rescues.insert_many(result)
+    db_output.rescues.insert_many(result)
     print(f"{len(result)}건 파이프라인 로드 완료!")
 
 start = time.time()
