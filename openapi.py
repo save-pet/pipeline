@@ -110,10 +110,10 @@ def get_coord(place, shelter_address):
             preprocess_address, coord = address2coord(shelter_address)
             if coord == 0:
                 address_target = int(preprocess_address.split()[-1].split("-")[-1])
-                new_preprocess_address = preprocess_address.replace(address_target,str(address_target+1))
+                new_preprocess_address = preprocess_address.replace(str(address_target),str(address_target+1))
                 preprocess_address, coord = address2coord(new_preprocess_address)
                 if coord == 0:
-                    new_preprocess_address = preprocess_address.replace(address_target,str(address_target-1))
+                    new_preprocess_address = preprocess_address.replace(str(address_target),str(address_target-1))
                     preprocess_address, coord = address2coord(new_preprocess_address)
                     if coord == 0:
                         return {"latitude": 37.23988837533657, "longitude": 131.8719452704162}
