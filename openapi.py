@@ -82,7 +82,7 @@ def place2coord(place):
 
     rq = requests.get(URL, headers=headers)
     data = rq.json()
-    if 'documents' not in data:
+    if ('documents' not in data) or (len(data['documents']==0)):
         return 0
     return data
 
@@ -105,7 +105,7 @@ def get_center_coord(data):
 
 def get_coord(place, shelter_address):
     data = place2coord(place)
-    if len(data) == 0:
+    if data == 0:
         data = place2coord(preprocessing_data(place))
         if len(data) == 0:
             return address2coord(shelter_address)
