@@ -50,7 +50,6 @@ def is_good_data(data_dict, key):
         print(key)
     return result
 
-
 def address2coord(address):
     preprocess_address = address.split("(")[0]
     headers = {
@@ -71,7 +70,6 @@ def address2coord(address):
         
     lng = float(data['documents'][0]['address']['x']) # 경도 127.XX
     lat = float(data['documents'][0]['address']['y']) # 위도 36.xx
-
     return {"latitude": lat, "longitude": lng}
 
 def place2coord(place):
@@ -87,7 +85,6 @@ def place2coord(place):
     return data
 
 def preprocessing_data(place):
-
     address = place.split()
     preprocess_data = [elem for elem in address if '동' in elem or '리' in elem or '면' in elem or '읍' in elem or '시' in elem]
     if len(preprocess_data)==0:
@@ -110,23 +107,21 @@ def get_coord(place, shelter_address):
         data = place2coord(preprocessing_data(place))
         if len(data) == 0:
             return address2coord(shelter_address)
-    
     return get_center_coord(data)
 
 def main():
     load_dotenv()
-
     db_output = get_db("regnotest")
-    db_dcument_count = db_output.rescues.count_documents({})
-    print(db_dcument_count)
+    db_document_count = db_output.rescues.count_documents({})
+    print(db_document_count)
     
     API_Key, date = get_requests_params("ApiKey", 11)
     animal_info_totalCount, animal_info_totalPages = get_total_count_pages(API_Key, date)
 
     # 보호중 데이터가 종료되는 경우 고려해봐야함
-    if db_dcument_count == animal_info_totalCount:
+    if db_document_count == animal_info_totalCount:
         print("업데이트할 항목이 없습니다!")
-        print(f"db_dcument_count: {db_dcument_count} | animal_info_totalCount : {animal_info_totalCount}")
+        print(f"db_document_count: {db_document_count} | animal_info_totalCount : {animal_info_totalCount}")
         return
     
     db_shelter_info = get_db("test")
@@ -160,9 +155,9 @@ def main():
             }
         )[1]
         
-    for page_number in range(1, animal_info_totalPages+1) 
-    for info_dict in get_info_list_by_page(API_Key, date, page_number)
-        ]
+        for page_number in range(1, animal_info_totalPages+1) 
+        for info_dict in get_info_list_by_page(API_Key, date, page_number)
+    ]
     db_output.rescues.drop() 
     print("초기화 완료!")
     db_output.rescues.insert_many(result)
@@ -170,77 +165,4 @@ def main():
 
 start = time.time()
 main()
-print("time :", time.time() - start) 
-
-# pprint(result)
-
-# soup = BeautifulSoup(rq.text, "html.parser")
-# totalCnt = int(soup.find("totalcount").text)
-# print(totalCnt)
-# pageCnt = int(totalCnt/1000) + 1
-# print(pageCnt)
-# for item in soup.find_all("item"):
-#     desertionNo = item.find("desertionno").text
-#     imgUrl = item.find("popfile").text
-#     happenDate = item.find("happendt").text
-#     happenPlace = item.find("happenplace").text
-#     kindCd = item.find("kindcd").text    
-#     colorCd = item.find("colorcd").text
-#     sexCode = item.find("sexcd").text
-#     neuteYn = item.find("neuteryn").text
-#     noticeSdt = item.find("noticesdt").text
-#     noticeEdt = item.find("noticeedt").text
-#     specialMark = item.find("specialmark").text
-#     age = item.find("age").text
-#     weight = item.find("weight").text
-#     processState = item.find("processstate").text
-#     careAddr = item.find("careaddr").text
-#     careName = item.find("carenm").text
-#     careTel = item.find("caretel").text
-#     officeTel = item.find("officetel").text
-
-#     careRegNo = db_openApi.careRegNo.find({"careNm" : careName})
-#     careregno = list(careRegNo)
-#     try :
-#         careCode = careregno[0]['careRegNo']
-#     except:
-#         careCode = 0
-#         print(item)
-#         print(careName, careregno)
-
-#     db_regnotest.rescues.insert_one({"desertionNo": desertionNo,"imgUrl": imgUrl, "happenDate": happenDate, "happenPlace": happenPlace, "kindCode": kindCd, "colorCode": colorCd, "sexCode": sexCode, "neuteY/N": neuteYn, "noticeStartDate":noticeSdt, "noticeEndDate": noticeEdt, "specialMark": specialMark, "age": age, "weight": weight, "processState": processState, "careCode": careCode, "careAddr": careAddr, "careName": careName, "careTel": careTel,  "officeTel": officeTel })
-
-# if totalCnt > 1000:
-#     while page < pageCnt:
-#         page += 1
-#         URL = "http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic?bgnde={Date}&endde={endDate}&pageNo={Page}&numOfRows=1000&serviceKey={API}".format(Page=page,Date=InputDate, API=API_Key)
-
-#         rq = requests.get(URL)
-#         soup = BeautifulSoup(rq.text, "html.parser")
-
-#         # rescue= []
-#         for item in soup.find_all("item"):
-#             desertionNo = item.find("desertionno").text
-#             imgUrl = item.find("popfile").text
-#             happenDate = item.find("happendt").text
-#             happenPlace = item.find("happenplace").text
-#             kindCd = item.find("kindcd").text    
-#             colorCd = item.find("colorcd").text
-#             sexCode = item.find("sexcd").text
-#             neuteYn = item.find("neuteryn").text
-#             noticeSdt = item.find("noticesdt").text
-#             noticeEdt = item.find("noticeedt").text
-#             specialMark = item.find("specialmark").text
-#             age = item.find("age").text
-#             weight = item.find("weight").text
-#             processState = item.find("processstate").text
-#             careAddr = item.find("careaddr").text
-#             careName = item.find("carenm").text
-#             careTel = item.find("caretel").text
-#             officeTel = item.find("officetel").text    
-            
-#             careRegNo = client.openApi.careRegNo.find({"careNm" : careName})
-#             careregno = list(careRegNo)
-#             careCode = careregno[0]['careRegNo']
-
-#             db.rescues.insert_one({"desertionNo": desertionNo,"imgUrl": imgUrl, "happenDate": happenDate, "happenPlace": happenPlace, "kindCode": kindCd, "colorCode": colorCd, "sexCode": sexCode, "neuteY/N": neuteYn, "noticeStartDate":noticeSdt, "noticeEndDate": noticeEdt, "specialMark": specialMark, "age": age, "weight": weight, "processState": processState, "careCode": careCode, "careAddr": careAddr, "careName": careName, "careTel": careTel,  "officeTel": officeTel })
+print("time :", time.time() - start)
