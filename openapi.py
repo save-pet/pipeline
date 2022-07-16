@@ -81,7 +81,9 @@ def place2coord(place):
     URL = f"https://dapi.kakao.com/v2/local/search/keyword.json?query={place}"
 
     rq = requests.get(URL, headers=headers)
-    data = rq.json()['documents']
+    data = rq.json()
+    if 'documents' not in data:
+        return 0
     return data
 
 def preprocessing_data(place):
