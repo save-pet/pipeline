@@ -35,9 +35,9 @@ def get_total_count_pages(API_Key, date):
 def get_info_list_by_page(API_Key, date, page_number):
     print_current_page = f'''current page : {page_number}\n'''
     print(print_current_page)
-    post_log(print_current_page)
+    post_log("<br>"+ print_current_page)
     with open('/var/www/html/index.html', 'a', encoding="utf-8") as html_file:
-            html_file.write("|"*100+"<br>")
+            html_file.write("|"*100+f" (if page No.{page_number} 100%) <br>")
     
     URL = get_url(API_Key, date, page_number)
     rq = requests.get(URL)
@@ -157,7 +157,7 @@ def main():
     db_document_count = db_output.rescues.count_documents({})
     print_db_document_count= f'''current DB stored document count : {db_document_count}\n'''
     print(print_db_document_count)
-    post_log("=====================================================================================")
+    post_progressbar("====================================================================================="+"<br>")
     post_log(print_db_document_count)
     
     
@@ -226,4 +226,4 @@ main()
 print_total_elapsed_time = f"total elapsed time : {time.time() - start}\n"
 print(print_total_elapsed_time)
 post_log(print_total_elapsed_time)
-post_log("=====================================================================================")
+post_progressbar("====================================================================================="+"<br>")
