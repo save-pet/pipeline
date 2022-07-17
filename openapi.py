@@ -169,8 +169,8 @@ def main():
                 "careName": info_dict['careNm'], 
                 "careTel": info_dict['careTel'],  
                 "officeTel": info_dict['officetel'],
-                "latitude" : lng_lat_dict['latitude'],
-                "longitude" : lng_lat_dict['longitude']
+                "happenLatitude" : lng_lat_dict['latitude'],
+                "happenLongitude" : lng_lat_dict['longitude']
             }
         )[1]
         
