@@ -165,7 +165,7 @@ def main():
                 "weight": info_dict['weight'], 
                 "processState": info_dict['processState'], 
                 "careCode":  is_good_data(shelter_info_dict, info_dict['careNm']),
-                "careAddr": info_dict['careAddr'], 
+                "careAddress": info_dict['careAddr'], 
                 "careName": info_dict['careNm'], 
                 "careTel": info_dict['careTel'],  
                 "officeTel": info_dict['officetel'],
