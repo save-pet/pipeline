@@ -33,7 +33,7 @@ def get_total_count_pages(API_Key, date):
     return animal_info_totalCount, animal_info_totalPages
 
 def get_info_list_by_page(API_Key, date, page_number):
-    print_current_page = f'''현재 진행중 페이지 : {page_number}'''
+    print_current_page = f'''현재 진행중 페이지 : {page_number}\n'''
     print(print_current_page)
     post_log(print_current_page)
     
@@ -137,12 +137,12 @@ def get_coord(place, shelter_address):
 
 def post_log(log):
     try:
-        with open('/var/www/html/index.html', 'a') as html_file:
+        with open('/var/www/html/index.html', 'a', encoding="UTF-8") as html_file:
             time = datetime.now(timezone('Asia/Seoul')).strftime('[%Y년%m월%d일 %H시%M분%S초] ')
             html_file.write(time + log)
     except:
         pass
-    
+
 def main():
     load_dotenv()
     db_output = get_db("test")
@@ -164,10 +164,10 @@ def main():
     
     db_shelter_info = get_db("test")
     shelter_info_dict = get_shelter_info(db_shelter_info)
-    print_pipeline_start = f"{animal_info_totalCount}건 파이프라인 가동!"
+    print_pipeline_start = f"{animal_info_totalCount}건 파이프라인 가동!\n"
     print(print_pipeline_start)
     post_log(print_pipeline_start)
-    print_total_page_count = f'''전체 페이지 : {animal_info_totalPages}'''
+    print_total_page_count = f'''전체 페이지 : {animal_info_totalPages}\n'''
     print(print_total_page_count)
     post_log(print_total_page_count)
 
@@ -203,16 +203,16 @@ def main():
         for info_dict in tqdm(get_info_list_by_page(API_Key, date, page_number))
     ]
     db_output.rescues.drop() 
-    print_reset_complete = "초기화 완료!"
+    print_reset_complete = "초기화 완료!\n"
     print(print_reset_complete)
     post_log(print_reset_complete)
     db_output.rescues.insert_many(result)
-    print_load_complete = f"{len(result)}건 파이프라인 로드 완료!"
+    print_load_complete = f"{len(result)}건 파이프라인 로드 완료!\n"
     print(print_load_complete)
     post_log(print_load_complete)
 
 start = time.time()
 main()
-print_total_elapsed_time = f"소요 시간 : {time.time() - start}"
+print_total_elapsed_time = f"소요 시간 : {time.time() - start}\n"
 print(print_total_elapsed_time)
 post_log(print_total_elapsed_time)
