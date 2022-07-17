@@ -33,7 +33,10 @@ def get_total_count_pages(API_Key, date):
     return animal_info_totalCount, animal_info_totalPages
 
 def get_info_list_by_page(API_Key, date, page_number):
-    print(f'''현재 진행중 페이지 : {page_number}''')
+    print_current_page = f'''현재 진행중 페이지 : {page_number}'''
+    print(print_current_page)
+    post_log(print_current_page)
+    
     URL = get_url(API_Key, date, page_number)
     rq = requests.get(URL)
     data = rq.json()
@@ -132,25 +135,42 @@ def get_coord(place, shelter_address):
     else: 
         return get_center_coord(data)
 
+def post_log(log):
+    try:
+        with open('/var/www/html/index.html', 'a') as html_file:
+            time = datetime.now(timezone('Asia/Seoul')).strftime('[%Y년%m월%d일 %H시%M분%S초] ')
+            html_file.write(time + log)
+    except:
+        pass
+    
 def main():
     load_dotenv()
     db_output = get_db("test")
     db_document_count = db_output.rescues.count_documents({})
-    print(f'''현재 DB 저장된 건수 : {db_document_count}''')
+    print_db_document_count= f'''현재 DB 저장된 건수 : {db_document_count}\n'''
+    print(print_db_document_count)
+    post_log(print_db_document_count)
+    
     
     API_Key, date = get_requests_params("ApiKey", 11)
     animal_info_totalCount, animal_info_totalPages = get_total_count_pages(API_Key, date)
 
     # 보호중 데이터가 종료되는 경우 고려해봐야함
     if db_document_count == animal_info_totalCount:
-        print("업데이트할 항목이 없습니다!")
-        print(f"db_document_count: {db_document_count} | animal_info_totalCount : {animal_info_totalCount}")
+        print_nothing_update = f"업데이트할 항목이 없습니다! db_document_count: {db_document_count} | animal_info_totalCount : {animal_info_totalCount}\n"
+        print(print_nothing_update)
+        post_log(print_nothing_update)
         return
     
     db_shelter_info = get_db("test")
     shelter_info_dict = get_shelter_info(db_shelter_info)
-    print(f"{animal_info_totalCount}건 파이프라인 가동!")
-    print(f'''전체 페이지 : {animal_info_totalPages}''')
+    print_pipeline_start = f"{animal_info_totalCount}건 파이프라인 가동!"
+    print(print_pipeline_start)
+    post_log(print_pipeline_start)
+    print_total_page_count = f'''전체 페이지 : {animal_info_totalPages}'''
+    print(print_total_page_count)
+    post_log(print_total_page_count)
+
     result = [ 
         (
             lng_lat_dict := get_coord(info_dict['happenPlace'], info_dict['careAddr']),
@@ -183,10 +203,16 @@ def main():
         for info_dict in tqdm(get_info_list_by_page(API_Key, date, page_number))
     ]
     db_output.rescues.drop() 
-    print("초기화 완료!")
+    print_reset_complete = "초기화 완료!"
+    print(print_reset_complete)
+    post_log(print_reset_complete)
     db_output.rescues.insert_many(result)
-    print(f"{len(result)}건 파이프라인 로드 완료!")
+    print_load_complete = f"{len(result)}건 파이프라인 로드 완료!"
+    print(print_load_complete)
+    post_log(print_load_complete)
 
 start = time.time()
 main()
-print("time :", time.time() - start)
+print_total_elapsed_time = f"소요 시간 : {time.time() - start}"
+print(print_total_elapsed_time)
+post_log(print_total_elapsed_time)
