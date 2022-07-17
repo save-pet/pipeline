@@ -1,3 +1,4 @@
 .env
 /openapi
 *.csv
+saveus_data_pipeline.log
