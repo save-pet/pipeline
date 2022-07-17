@@ -149,6 +149,7 @@ def main():
     db_document_count = db_output.rescues.count_documents({})
     print_db_document_count= f'''current DB stored document count : {db_document_count}\n'''
     print(print_db_document_count)
+    post_log("=====================================================================================")
     post_log(print_db_document_count)
     
     
@@ -216,3 +217,4 @@ main()
 print_total_elapsed_time = f"total elapsed time : {time.time() - start}\n"
 print(print_total_elapsed_time)
 post_log(print_total_elapsed_time)
+post_log("=====================================================================================")
