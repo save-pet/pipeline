@@ -142,6 +142,12 @@ def post_log(log):
             html_file.write("<br>"+ time + log)
     except:
         pass
+def post_progressbar(bar):
+    try:
+        with open('/var/www/html/index.html', 'a', encoding="utf-8") as html_file:
+            html_file.write(bar)
+    except:
+        pass
 
 def main():
     load_dotenv()
@@ -172,10 +178,12 @@ def main():
     print(print_total_page_count)
     post_log(print_total_page_count)
 
-    post_log("<br>"+"|"*1000),
+    with open('/var/www/html/index.html', 'a', encoding="utf-8") as html_file:
+            html_file.write("<br>"+"|"*100)
+
     result = [ 
         (
-            [post_log("|"), False][idx%2],
+            [post_progressbar("|"), False][idx%2],
             lng_lat_dict := get_coord(info_dict['happenPlace'], info_dict['careAddr']),
             {
                 "desertionNo": info_dict['desertionNo'],
