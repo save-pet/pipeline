@@ -36,6 +36,8 @@ def get_info_list_by_page(API_Key, date, page_number):
     print_current_page = f'''current page : {page_number}\n'''
     print(print_current_page)
     post_log(print_current_page)
+    with open('/var/www/html/index.html', 'a', encoding="utf-8") as html_file:
+            html_file.write("<br>"+"|"*100)
     
     URL = get_url(API_Key, date, page_number)
     rq = requests.get(URL)
@@ -139,7 +141,7 @@ def post_log(log):
     try:
         with open('/var/www/html/index.html', 'a', encoding="utf-8") as html_file:
             time = datetime.now(timezone('Asia/Seoul')).strftime('[%Y%m%d %H:%M:%S] ')
-            html_file.write("<br>"+ time + log)
+            html_file.write(time + log + "<br>")
     except:
         pass
 def post_progressbar(bar):
@@ -177,9 +179,6 @@ def main():
     print_total_page_count = f'''count of total page : {animal_info_totalPages}\n'''
     print(print_total_page_count)
     post_log(print_total_page_count)
-
-    with open('/var/www/html/index.html', 'a', encoding="utf-8") as html_file:
-            html_file.write("<br>"+"|"*100)
 
     result = [ 
         (
