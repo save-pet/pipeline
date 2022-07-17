@@ -172,9 +172,10 @@ def main():
     print(print_total_page_count)
     post_log(print_total_page_count)
 
-    html_file = open('/var/www/html/index.html', 'a', encoding="utf-8")
+    post_log("<br>"+"|"*1000),
     result = [ 
         (
+            [post_log("|"), False][idx%2],
             lng_lat_dict := get_coord(info_dict['happenPlace'], info_dict['careAddr']),
             {
                 "desertionNo": info_dict['desertionNo'],
@@ -202,7 +203,7 @@ def main():
         )[1]
         
         for page_number in range(1, animal_info_totalPages+1) 
-        for info_dict in tqdm(get_info_list_by_page(API_Key, date, page_number), file=html_file)
+        for idx, info_dict in enumerate(tqdm(get_info_list_by_page(API_Key, date, page_number)))
     ]
     db_output.rescues.drop() 
     print_reset_complete = "DB reset complete!\n"
