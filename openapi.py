@@ -33,7 +33,7 @@ def get_total_count_pages(API_Key, date):
     return animal_info_totalCount, animal_info_totalPages
 
 def get_info_list_by_page(API_Key, date, page_number):
-    print_current_page = f'''현재 진행중 페이지 : {page_number}\n'''
+    print_current_page = f'''current page : {page_number}\n'''
     print(print_current_page)
     post_log(print_current_page)
     
