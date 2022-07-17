@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from pprint import pprint
+from pytz import timezone
 from tqdm import tqdm
 
 def get_db(database_name):
@@ -20,7 +21,7 @@ def get_url(API_Key, date, page_number = 1):
 
 def get_requests_params(key, days_ago):
     API_Key = os.environ.get(key)
-    date = (datetime.today()- timedelta(days_ago)).strftime("%Y%m%d")
+    date = (datetime.now(timezone('Asia/Seoul'))- timedelta(days_ago)).strftime('%Y%m%d')
     return API_Key, date
 
 def get_total_count_pages(API_Key, date):
