@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from pprint import pprint
+from tqdm import tqdm
 
 def get_db(database_name):
     mongodb_URL = os.environ.get('mongodbURL')
@@ -31,6 +32,7 @@ def get_total_count_pages(API_Key, date):
     return animal_info_totalCount, animal_info_totalPages
 
 def get_info_list_by_page(API_Key, date, page_number):
+    print(f'''현재 진행중 페이지 : {page_number}''')
     URL = get_url(API_Key, date, page_number)
     rq = requests.get(URL)
     data = rq.json()
@@ -47,7 +49,8 @@ def is_good_data(data_dict, key):
     try:
         result = data_dict[key]
     except:
-        print(key)
+        # print(key)
+        pass
     return result
 
 def address2coord(address):
@@ -63,9 +66,9 @@ def address2coord(address):
     data = rq.json()
 
     if ('documents' not in data) or (len(data['documents'])==0):
-        pprint(data)
-        print(address)
-        print("address2coord Error")
+        # pprint(data)
+        # print(address)
+        # print("address2coord Error")
         return preprocess_address, 0
         
     lng = float(data['documents'][0]['address']['x']) # 경도 127.XX
@@ -99,7 +102,7 @@ def get_center_coord(data):
         cunsum_dict['lat'] += float(elem['y'])
         cunsum_dict['lng'] += float(elem['x'])
     result = {"latitude": float(cunsum_dict['lat'])/len(data), "longitude": float(cunsum_dict['lng'])/len(data)}
-    print(result)
+    # print(result)
     return result
 
 def get_coord(place, shelter_address):
@@ -132,7 +135,7 @@ def main():
     load_dotenv()
     db_output = get_db("test")
     db_document_count = db_output.rescues.count_documents({})
-    print(db_document_count)
+    print(f'''현재 DB 저장된 건수 : {db_document_count}''')
     
     API_Key, date = get_requests_params("ApiKey", 11)
     animal_info_totalCount, animal_info_totalPages = get_total_count_pages(API_Key, date)
@@ -146,6 +149,7 @@ def main():
     db_shelter_info = get_db("test")
     shelter_info_dict = get_shelter_info(db_shelter_info)
     print(f"{animal_info_totalCount}건 파이프라인 가동!")
+    print(f'''전체 페이지 : {animal_info_totalPages}''')
     result = [ 
         (
             lng_lat_dict := get_coord(info_dict['happenPlace'], info_dict['careAddr']),
@@ -175,7 +179,7 @@ def main():
         )[1]
         
         for page_number in range(1, animal_info_totalPages+1) 
-        for info_dict in get_info_list_by_page(API_Key, date, page_number)
+        for info_dict in tqdm(get_info_list_by_page(API_Key, date, page_number))
     ]
     db_output.rescues.drop() 
     print("초기화 완료!")
