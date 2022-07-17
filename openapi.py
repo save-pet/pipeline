@@ -37,7 +37,7 @@ def get_info_list_by_page(API_Key, date, page_number):
     print(print_current_page)
     post_log(print_current_page)
     with open('/var/www/html/index.html', 'a', encoding="utf-8") as html_file:
-            html_file.write("<br>"+"|"*100)
+            html_file.write("|"*100+"<br>")
     
     URL = get_url(API_Key, date, page_number)
     rq = requests.get(URL)
