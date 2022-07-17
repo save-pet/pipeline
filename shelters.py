@@ -115,6 +115,6 @@ for x in shelters:
             CAN_NOT_ADDRESS.append({"careregno":careregno,"careName":careName, "careAddr":careAddr})
             print(careregno, careAddr)
 
-        db1.shelters.insert_one({"careCode": careregno, "careAddr": careAddr, "careName": careName, "careTel": careTel, "longitude": lng, "latitude": lat})
+        db1.shelters.insert_one({"careCode": careregno, "careAddress": careAddr, "careName": careName, "careTel": careTel, "longitude": lng, "latitude": lat})
 
 print(CAN_NOT_ADDRESS)
