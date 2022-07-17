@@ -182,7 +182,7 @@ def main():
 
     result = [ 
         (
-            [post_progressbar("|"), False][idx%2],
+            post_progressbar("|") if idx%10==0 else False,
             lng_lat_dict := get_coord(info_dict['happenPlace'], info_dict['careAddr']),
             {
                 "desertionNo": info_dict['desertionNo'],
