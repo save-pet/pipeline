@@ -137,9 +137,9 @@ def get_coord(place, shelter_address):
 
 def post_log(log):
     try:
-        with open('/var/www/html/index.html', 'a', encoding="UTF-8") as html_file:
-            time = datetime.now(timezone('Asia/Seoul')).strftime('[%Y년%m월%d일 %H시%M분%S초] ')
-            html_file.write(time + log)
+        with open('/var/www/html/index.html', 'a', encoding="utf-8") as html_file:
+            time = datetime.now(timezone('Asia/Seoul')).strftime('[%Y%m%d %H:%M:%S] ')
+            html_file.write("<br>"+ time + log)
     except:
         pass
 
@@ -147,7 +147,7 @@ def main():
     load_dotenv()
     db_output = get_db("test")
     db_document_count = db_output.rescues.count_documents({})
-    print_db_document_count= f'''현재 DB 저장된 건수 : {db_document_count}\n'''
+    print_db_document_count= f'''current DB stored document count : {db_document_count}\n'''
     print(print_db_document_count)
     post_log(print_db_document_count)
     
@@ -157,17 +157,17 @@ def main():
 
     # 보호중 데이터가 종료되는 경우 고려해봐야함
     if db_document_count == animal_info_totalCount:
-        print_nothing_update = f"업데이트할 항목이 없습니다! db_document_count: {db_document_count} | animal_info_totalCount : {animal_info_totalCount}\n"
+        print_nothing_update = f"we dont have nothing to update! db_document_count: {db_document_count} | animal_info_totalCount : {animal_info_totalCount}\n"
         print(print_nothing_update)
         post_log(print_nothing_update)
         return
     
     db_shelter_info = get_db("test")
     shelter_info_dict = get_shelter_info(db_shelter_info)
-    print_pipeline_start = f"{animal_info_totalCount}건 파이프라인 가동!\n"
+    print_pipeline_start = f"{animal_info_totalCount} pipeline start!\n"
     print(print_pipeline_start)
     post_log(print_pipeline_start)
-    print_total_page_count = f'''전체 페이지 : {animal_info_totalPages}\n'''
+    print_total_page_count = f'''count of total page : {animal_info_totalPages}\n'''
     print(print_total_page_count)
     post_log(print_total_page_count)
 
@@ -203,16 +203,16 @@ def main():
         for info_dict in tqdm(get_info_list_by_page(API_Key, date, page_number))
     ]
     db_output.rescues.drop() 
-    print_reset_complete = "초기화 완료!\n"
+    print_reset_complete = "DB reset complete!\n"
     print(print_reset_complete)
     post_log(print_reset_complete)
     db_output.rescues.insert_many(result)
-    print_load_complete = f"{len(result)}건 파이프라인 로드 완료!\n"
+    print_load_complete = f"{len(result)} pipeline load complete!\n"
     print(print_load_complete)
     post_log(print_load_complete)
 
 start = time.time()
 main()
-print_total_elapsed_time = f"소요 시간 : {time.time() - start}\n"
+print_total_elapsed_time = f"total elapsed time : {time.time() - start}\n"
 print(print_total_elapsed_time)
 post_log(print_total_elapsed_time)
