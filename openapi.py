@@ -207,7 +207,7 @@ def main():
                 "happenLatitude" : lng_lat_dict['latitude'],
                 "happenLongitude" : lng_lat_dict['longitude']
             }
-        )[1]
+        )[2]
         
         for page_number in range(1, animal_info_totalPages+1) 
         for idx, info_dict in enumerate(tqdm(get_info_list_by_page(API_Key, date, page_number)))
