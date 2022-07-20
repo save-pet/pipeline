@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from pprint import pprint
-
+from tqdm import tqdm
 load_dotenv()
 
 
@@ -77,14 +77,23 @@ for x in db0.careRegNo.find():
 CAN_NOT_ADDRESS = list()
 # CAN_NOT_ADDRESS_ADDR = []
 # CAN_NOT_ADDRESS_NAME = []
-for x in shelters:
-    careregno = x['careRegNo']
+careRegNo_list = [elem['careRegNo'] for elem in shelters]
+not_dup_careRegNo = set(careRegNo_list)
+print(len(careRegNo_list))
+print(len(not_dup_careRegNo))
+count = 0
+result = list()
+for careregno in tqdm(not_dup_careRegNo):
+    # careregno = x['careRegNo']
 
     URL = "http://apis.data.go.kr/1543061/abandonmentPublicSrvc/abandonmentPublic?care_reg_no={careregno}&numOfRows=1&serviceKey={API}".format(careregno=careregno, API=API_Key)
+    try:
+        rq = requests.get(URL)
+        soup = BeautifulSoup(rq.text, "html.parser")
+    except:
+        count+=1
 
-    rq = requests.get(URL)
-    soup = BeautifulSoup(rq.text, "html.parser")
-
+    
     for item in soup.find_all("item"):
         careAddr = item.find("careaddr").text
         careName = item.find("carenm").text
@@ -114,7 +123,13 @@ for x in shelters:
         except:
             CAN_NOT_ADDRESS.append({"careregno":careregno,"careName":careName, "careAddr":careAddr})
             print(careregno, careAddr)
-
-        db1.shelters.insert_one({"careCode": careregno, "careAddress": careAddr, "careName": careName, "careTel": careTel, "longitude": lng, "latitude": lat})
-
+        result_dict = {"careCode": careregno, "careAddress": careAddr, "careName": careName, "careTel": careTel, "longitude": lng, "latitude": lat}
+        result.append(result_dict)
+        # print(result)
+not_dup_result = list({dict['careCode']:dict for dict in result}.values())
+print(f"결과 중복제거 O :{len(not_dup_result)}")
+print(f"결과 중복제거 X : {len(result)}")
+db1.shelters.insert_many(not_dup_result)
+        # db1.shelters.insert_one({"careCode": careregno, "careAddress": careAddr, "careName": careName, "careTel": careTel, "longitude": lng, "latitude": lat})
+print(count)
 print(CAN_NOT_ADDRESS)
