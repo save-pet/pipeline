@@ -251,7 +251,7 @@ def main():
     post_log(print_db_document_count)
     
     
-    API_Key, date = get_requests_params("ApiKey", 1)
+    API_Key, date = get_requests_params("ApiKey", 10)
     animal_info_totalCount, animal_info_totalPages = get_total_count_pages(API_Key, date)
 
     # 보호중 데이터가 종료되는 경우 고려해봐야함
