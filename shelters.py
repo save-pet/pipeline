@@ -65,13 +65,12 @@ def address2coord_test(address):
 
 mongodb_URL = os.environ.get('mongodbURL')
 client = MongoClient(mongodb_URL)
-db0 = client.openApi
-db1 = client.test
+db = getattr(client, os.environ.get('DB_NAME')) #"test"
 
 API_Key = os.environ.get("ApiKey")
 
 shelters = []
-for x in db0.careRegNo.find():
+for x in db.careRegNo.find():
     shelters.append(x)
 
 CAN_NOT_ADDRESS = list()
@@ -129,7 +128,7 @@ for careregno in tqdm(not_dup_careRegNo):
 not_dup_result = list({dict['careCode']:dict for dict in result}.values())
 print(f"결과 중복제거 O :{len(not_dup_result)}")
 print(f"결과 중복제거 X : {len(result)}")
-db1.shelters.insert_many(not_dup_result)
+db.shelters.insert_many(not_dup_result)
         # db1.shelters.insert_one({"careCode": careregno, "careAddress": careAddr, "careName": careName, "careTel": careTel, "longitude": lng, "latitude": lat})
 print(count)
 print(CAN_NOT_ADDRESS)

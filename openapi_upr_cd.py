@@ -8,7 +8,7 @@ load_dotenv()
 
 mongodb_URL = os.environ.get('mongodbURL')
 client = MongoClient(mongodb_URL)
-db = client.openApi
+db = getattr(client, os.environ.get('DB_NAME')) #"test"
 
 API_Key = os.environ.get("ApiKey")
 

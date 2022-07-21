@@ -243,7 +243,7 @@ def alert_new_notice_sms(result):
 
 def main():
     load_dotenv()
-    db_output = get_db("test")
+    db_output = get_db(os.environ.get('DB_NAME')) #"test"
     db_document_count = db_output.rescues.count_documents({})
     print_db_document_count= f'''current DB stored document count : {db_document_count}\n'''
     print(print_db_document_count)
