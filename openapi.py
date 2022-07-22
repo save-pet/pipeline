@@ -2,7 +2,7 @@ import os
 import time
 import math
 import requests
-from twilio.rest import Client
+# from twilio.rest import Client
 from datetime import datetime, timedelta
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -251,7 +251,7 @@ def main():
     post_log(print_db_document_count)
     
     
-    API_Key, date = get_requests_params("ApiKey", 10)
+    API_Key, date = get_requests_params("ApiKey", 3)
     animal_info_totalCount, animal_info_totalPages = get_total_count_pages(API_Key, date)
 
     # 보호중 데이터가 종료되는 경우 고려해봐야함
@@ -280,6 +280,7 @@ def main():
                 "happenDate": info_dict['happenDt'], 
                 "happenPlace": info_dict['happenPlace'], 
                 "kindCode": info_dict['kindCd'], 
+                "kindCodeByNum" : 0 if "개" in info_dict['kindCd'] else 1 if "고양이" in info_dict['kindCd'] else 2,
                 "colorCode": info_dict['colorCd'], 
                 "sexCode": info_dict['sexCd'], 
                 "neuteY/N": info_dict['neuterYn'], 
@@ -295,7 +296,8 @@ def main():
                 "careTel": info_dict['careTel'],  
                 "officeTel": info_dict['officetel'],
                 "happenLatitude" : lng_lat_dict['latitude'],
-                "happenLongitude" : lng_lat_dict['longitude']
+                "happenLongitude" : lng_lat_dict['longitude'],
+                "coords":[lng_lat_dict['longitude'], lng_lat_dict['latitude']]
             }
         )[-1]
         
@@ -303,7 +305,7 @@ def main():
         for idx, info_dict in enumerate(tqdm(get_info_list_by_page(API_Key, date, page_number)))
     ]
 
-    alert_new_notice_sms(result)
+    #alert_new_notice_sms(result)
 
     db_output.rescues.drop() 
     print_reset_complete = "DB reset complete!\n"
