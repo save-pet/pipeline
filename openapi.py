@@ -196,15 +196,16 @@ def get_lost_shelter_by_carecode(careCode):
 def push_sms(phone_shelter_dict):
     load_dotenv()
     client = Client(os.environ.get('TWILIO_ACCOUNT_SID_JM'), os.environ.get('TWILIO_AUTH_TOKEN_JM'))
-    for phone_number, shelter_set in phone_shelter_dict.items():
+    for phone_number, shelter_list in phone_shelter_dict.items():
+        urls = '\n '.join(set([f"{shelter_dict['shelter_name']} : http://kdt-sw2-seoul-team04.elicecoding.com/api/rescue/care-code/{shelter_dict['shelter_code']}" for shelter_dict in shelter_list]))
         body = f'''
         
         구해줘 댕냥쓰!
         주인님! 
-        근처 보호소 {', '.join(shelter_set)}에서 
+        근처 보호소에서 
         주인을 기다리는 댕냥이들이 새로 왔어요!
         우리 댕냥이가 있는지 확인해주세요!!
-        http://kdt-sw2-seoul-team04.elicecoding.com
+        {urls}
         '''
         try:
             message = client.messages.create(
@@ -233,13 +234,13 @@ def alert_new_notice_sms(result):
             phone_number = lost_shelter['phoneNumber'].replace("-","")
             shelter_code = lost_shelter['careCode']
             shelter_name = get_shelter_name_by_carecode(shelter_code)
-            phone_shelter_dict.setdefault(phone_number,set())
-            phone_shelter_dict[phone_number].add(shelter_name)
+            phone_shelter_dict.setdefault(phone_number,[])
+            phone_shelter_dict[phone_number].append({"shelter_name":shelter_name,"shelter_code":shelter_code})
 
     print(phone_shelter_dict)
     push_sms(phone_shelter_dict)
     print("sms push complete")
-    # post_log("sms push complete")
+    post_log("sms push complete")
 
 def main():
     load_dotenv()
@@ -251,7 +252,7 @@ def main():
     post_log(print_db_document_count)
     
     
-    API_Key, date = get_requests_params("ApiKey", 3)
+    API_Key, date = get_requests_params("ApiKey", 1)
     animal_info_totalCount, animal_info_totalPages = get_total_count_pages(API_Key, date)
 
     # 보호중 데이터가 종료되는 경우 고려해봐야함
