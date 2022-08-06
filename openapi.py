@@ -197,7 +197,7 @@ def push_sms(phone_shelter_dict):
     load_dotenv()
     client = Client(os.environ.get('TWILIO_ACCOUNT_SID_JM'), os.environ.get('TWILIO_AUTH_TOKEN_JM'))
     for phone_number, shelter_list in phone_shelter_dict.items():
-        urls = '\n '.join(set([f"{shelter_dict['shelter_name']} : http://kdt-sw2-seoul-team04.elicecoding.com/api/rescue/care-code/{shelter_dict['shelter_code']}" for shelter_dict in shelter_list]))
+        urls = '\n '.join(set([f"{shelter_dict['shelter_name']} : http://{os.environ.get('DOMAIN')}/api/rescue/care-code/{shelter_dict['shelter_code']}" for shelter_dict in shelter_list]))
         body = f'''
         
         구해줘 댕냥쓰!
