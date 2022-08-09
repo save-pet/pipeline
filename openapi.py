@@ -306,7 +306,7 @@ def main():
         for idx, info_dict in enumerate(tqdm(get_info_list_by_page(API_Key, date, page_number)))
     ]
 
-    #alert_new_notice_sms(result)
+    # alert_new_notice_sms(result)
 
     db_output.rescues.drop() 
     print_reset_complete = "DB reset complete!\n"
