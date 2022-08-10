@@ -1,0 +1,17 @@
+name: pipeline CI
+
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [dev]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    steps:
+      - run: |
+          cd pipeline
+          git checkout -- .
+          git pull 
+          sudo chmod +x openapi.py
