@@ -11,7 +11,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - run: |
-          cd pipeline
+          cd /home/elicejam/pipeline
           git checkout -- .
           git pull 
           sudo chmod +x openapi.py
