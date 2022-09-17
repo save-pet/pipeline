@@ -1,3 +1,14 @@
+# Installation
+```
+conda create --name YOUR_VM_NAME --clone base python=3.8 --file requirement.txt --channel default --channel anaconda
+```
+# Usage
+```
+conda activate YOUR_VM_NAME
+python openapi.py
+```
+
+
 # openApi_rescue
 
 openapi_upr_cd.py -> 시도 코드 불러오기
